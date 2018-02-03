@@ -1,0 +1,92 @@
+ChatFuel Bot ID:
+https://dashboard.chatfuel.com/#/bot/5a047925e4b0918d5c034dac/grow
+                                     ^^^^ bot ID ^^^
+
+Broadcast API Token (from configure tab of ChatFuel):
+qwYLsCSz8hk4ytd6CPKP4C0oalstMnGdpDjF8YFHPHCieKNc0AfrnjVs91fGuH74
+
+
+RAW ChatFuel Checkbox Code (example):
+<script>window.fbMessengerPlugins = window.fbMessengerPlugins || { init : function() { FB.init({ appId: "1678638095724206", xfbml: true, version: "v2.6" }); }, callable : [] }; window.fbMessengerPlugins.callable.push( function() { var ruuid, fbPluginElements = document.querySelectorAll(".fb-messenger-checkbox[page_id='148465029146751']"); if (fbPluginElements) { for( i = 0; i < fbPluginElements.length; i++ ) { ruuid = 'cf_' + (new Array(16).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)[Math.random()<.5?"toString":"toUpperCase"]();})); fbPluginElements[i].setAttribute('user_ref', ruuid) ; fbPluginElements[i].setAttribute('origin', window.location.href); window.confirmOptIn = function() { FB.AppEvents.logEvent('MessengerCheckboxUserConfirmation', null, { app_id:"1678638095724206", page_id:"148465029146751", ref:"b64:V2VsY29tZSBtZXNzYWdl", user_ref: ruuid }); }; } } }); window.fbAsyncInit = window.fbAsyncInit || function() { window.fbMessengerPlugins.callable.forEach( function( item ) { item(); } ); window.fbMessengerPlugins.init(); }; setTimeout( function() { (function(d, s, id){ var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) { return; } js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/sdk.js"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk')); }, 0);</script> <div class="fb-messenger-checkbox" origin="" page_id="132056154153513" messenger_app_id="1678638095724206" user_ref="" prechecked="true" allow_login="true" size="xlarge"></div>
+
+
+** Once the checkbox code is parsed into a separate <script> and <div> tag and the ref variable is set to window.refBlock,
+** it would be rendered to the product page exactly as follows
+<div class="checkbox-container">
+
+	<script>window.fbMessengerPlugins = window.fbMessengerPlugins || { init : function() { FB.init({ appId: "1678638095724206", xfbml: true, version: "v2.6" }); }, callable : [] }; window.fbMessengerPlugins.callable.push( function() { var ruuid, fbPluginElements = document.querySelectorAll(".fb-messenger-checkbox[page_id='148465029146751']"); if (fbPluginElements) { for( i = 0; i < fbPluginElements.length; i++ ) { ruuid = 'cf_' + (new Array(16).join().replace(/(.|$)/g, function(){return ((Math.random()*36)|0).toString(36)[Math.random()<.5?"toString":"toUpperCase"]();})); fbPluginElements[i].setAttribute('user_ref', ruuid) ; fbPluginElements[i].setAttribute('origin', window.location.href); window.confirmOptIn = function() { FB.AppEvents.logEvent('MessengerCheckboxUserConfirmation', null, { app_id:"1678638095724206", page_id:"148465029146751", ref:window.refBlock, user_ref: ruuid }); }; } } }); window.fbAsyncInit = window.fbAsyncInit || function() { window.fbMessengerPlugins.callable.forEach( function( item ) { item(); } ); window.fbMessengerPlugins.init(); }; setTimeout( function() { (function(d, s, id){ var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) { return; } js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/sdk.js"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk')); }, 0);</script>
+
+	<div class="checkbox-wrapper">
+		 <div class="fb-messenger-checkbox" origin="" page_id="563975957327513" messenger_app_id="1678638095724206" user_ref="" prechecked="true" allow_login="true" size="xlarge"></div>
+	</div>
+
+	<div class="checkbox-message">
+		Check the box above to get order notifications! (this content is an option in the app settings)
+	</div>
+
+</div>
+
+
+** This JS needs to be rendered in the product page or appended to theme.js.
+** Might be better to just render on the product page, or even sitewide
+<script>
+// we need to get the cart token somehow - the app should be able to get cart token
+// from the liquid template, or the app needs to render it in the script
+// we can't assume the store theme will have it available
+uid = (new Array(24).join().replace(/(.|$)/g, function() {
+	return ((Math.random() * 36) | 0).toString(36)[Math.random() < .5 ? "toString" : "toUpperCase"]();
+}));
+window.refBlock = 'cartFuel|'+uid+'|'+window.Shopify.Checkout.apiHost+'|'+window.Shopify.Checkout.rememberMeAccessToken;
+window.refBlock = 'b64:' + btoa(window.refBlock);
+
+_cfCartButton = document.querySelector('form[action*="add"] input[type="submit"]');
+if(!_cfCartButton){
+	_cfCartButton = document.querySelector('form[action*="add"] button[type="submit"]');
+}
+if(_cfCartButton){
+	_cfCartButton.addEventListener('click', function(){
+		// only trigger the event once per session
+		if(_cfGetCookie('_cfSubmitted') == ''){
+			_cfSetCookie('_cfSubmitted',1);
+			window.confirmOptIn();
+		}
+	});
+}
+function _cfSetCookie(cname,cvalue) {
+	document.cookie = cname + '=' + cvalue + ';domain=' + window.location.hostname + ';path=/';
+}
+function _cfGetCookie(cname) {
+	var name = cname + '=';
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for(var i = 0; i <ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return '';
+}
+</script>
+
+** This CSS needs to be appended to theme.scss.liquid
+div.checkbox-container,
+div.checkbox-wrapper {
+	display: block;
+	clear: both;
+	width: 198px;
+	overflow: hidden;
+	height: 78px;
+	margin: 0 auto;
+}
+div.checkbox-container:before,
+div.checkbox-container:after,
+div.checkbox-wrapper:before,
+div.checkbox-wrapper:after {
+	content: "";
+	display: table;
+	clear: both;
+}

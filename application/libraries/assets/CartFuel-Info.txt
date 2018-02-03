@@ -1,0 +1,47 @@
+CartFuel Admins
+Pat Friedl: pfriedl@gmail.com
+Zach Nussbaum: znuss12@gmail.com
+Stephen Bradeen: stephenbradeen@gmail.com
+Andrew Bilak: andrew@royalwoodmedia.com
+
+Ahopify App Developer
+Ashfaque Ansari: ashfaque.amk@gmail.com
+
+App Emails:
+info@cartfuel.io
+sales@cartfuel.io
+pat@cartfuel.io
+zach@cartfuel.io
+andrew@cartfuel.io
+stephen@cartfuel.io
+
+Messenger IDs for testing:
+Stephen:
+Pat: 1495307143920375
+Andrew:
+Bot ID: 5a2b5ef6e4b0d0e611d73b76
+How to get your Messenger ID for broadcast tests: https://m.me/132056154153513?ref=ID
+
+Domain: cartfuel.io
+App domain: app.cartfuel.io
+IP: 8.29.136.160
+FTP: ftp.cartfuel.io
+cPanel: http://8.29.136.160:2082
+User: cartfuel
+Pass: Ultrasu3d3!##
+PayPal: sales@cartfuel.io / Ultrasu3d3!##
+
+MySQL:
+cartfuel_CartFuel - main website db
+cartfuel_CartFuelApp - shopify app db
+Users: cartfuel_wp, cartfuel_app
+Pass: Ultrasu3d3
+
+Shopify:
+https://developers.shopify.com/
+https://partners.shopify.com/676709/apps
+https://braintrustint.myshopify.com/admin - development store
+https://cartfuel.myshopify.com/admin - demo store
+
+App Credentials: cf8e7e16a577d46cbde86504cdc50d9f
+API Secret Key: e87c12eaa4edc9313116191e286dcd34
