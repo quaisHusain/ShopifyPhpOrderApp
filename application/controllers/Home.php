@@ -15,6 +15,78 @@ class Home extends CI_Controller{
 
 
 
+    public function updateFullfilstatus()
+    {   
+        
+        $input = file_get_contents('php://input');
+        $testdad=array('data'=>$input, 'data_type'=>'FullfileOrder');
+        $data=json_decode($input);
+        $this->Global_model->testData($testdad);
+        $data->status;
+        $data->tracking_number;
+        if($data->status="success"){
+            $fullfillmentsss="fulfilled";
+        }else{
+           $fullfillmentsss=''; 
+        }
+       $update=array('orderid'=>$data->order_id,
+          'tracking_number'=> $data->tracking_number,
+          'fulfillments'=> $fullfillmentsss
+        );
+       $this->updateOrderFulfillStatus($update);
+       echo '{"status":"ok"}';
+    }
+
+    public function OrderUpade()
+    {
+        $input = file_get_contents('php://input');
+        $testdad=array('data'=>$input, 'data_type'=>'OrderUpade');
+        $data=json_decode($input);
+       // print_r($data);
+       
+        $orderid=$data->id;
+        $card=$data->note;
+        $tags=$data->tags;
+        $fulfillments=$data->fulfillment_status;
+         $fulfillmentss=$data->fulfillments;
+        if(isset($fulfillmentss[0]->tracking_number))
+        {
+             $tracking_number= $fulfillmentss[0]->tracking_number;
+        }else
+        {
+            $tracking_number= '';
+        }
+         $ordersdata=array('orderid'=>$data->id,'card'=>$data->note,'tags'=>$tags,'fulfillments'=>$data->fulfillment_status,'tracking_number'=>$tracking_number);
+        $this->updateOrderAllField($ordersdata);
+         echo '{"status":"ok"}';
+    }
+
+    public function NewOrderNotification()
+    {
+        $input = file_get_contents('php://input');
+        $testdad=array('data'=>$input, 'data_type'=>'newOrder');
+        $data=json_decode($input);
+        //$this->Global_model->testData($testdad);
+        $this->insert_order($data);
+        print_r($data);
+        exit;
+    }
+
+    function updateOrderAllField($update)
+    {
+        $sql="update tbl_orders set card='".$update['card']."', tags='".$update['tags']."', tracking_number='".$update['tracking_number']."', fulfillments='".$update['fulfillments']."' where orderid='".$update['orderid']."'";
+        $this->db->query($sql);
+    }
+
+
+
+
+    public function updateOrderFulfillStatus($update)
+    {
+        $sql="update tbl_orders set tracking_number='".$update['tracking_number']."', fulfillments='".$update['fulfillments']."' where orderid='".$update['orderid']."'";
+        $this->db->query($sql);
+    }
+
     public function syncShopiFyorder()
     {   
 
@@ -27,9 +99,10 @@ class Home extends CI_Controller{
             {
                  $lastOrder=$this->getLastOrderId();
                  $apiconfig= getShop_accessToken();
+                 //print_r($apiconfig);
                  $this->load->library('Shopify' , $apiconfig);
-                 $param=array('limit'=>250,'status'=>'any','since_id'=>$lastOrder);
-                 $orders=$this->shopify->call(['METHOD' => 'GET','URL'=>'admin/orders.json?since_id='.$lastOrder,'DATA'=>$param],TRUE);
+                 //$param=array('limit'=>250,'status'=>'any','since_id'=>$lastOrder);
+                 $orders=$this->shopify->call(['METHOD' => 'GET','URL'=>'admin/orders.json?since_id='.$lastOrder.'&limit=250&status=any'],TRUE);
                 if(count($orders)>0)
                 {
                 
@@ -97,7 +170,7 @@ class Home extends CI_Controller{
          $paid='';
          $card='';
          $tracking_number='';
-
+         $fulfillments=$orders->fulfillment_status;
         if(isset($orders->id))
         {
             $orderid=$orders->id;
